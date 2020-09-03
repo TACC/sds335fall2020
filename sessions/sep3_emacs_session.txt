@@ -1,0 +1,29 @@
+// how do you get out?
+// Control-x control-s  (save file)
+// Control-x control-c  (exit)
+
+// navigation
+// yes, cursor keys work....
+// better:
+// per character
+// Control-a : beginning of line
+// Control-e : end of line
+// Control-f : one character forward
+// Control-b : one character backward
+
+// per line:
+// Control-n : next line
+// control-p : previous line
+
+// for programmers:
+// ESC Control-f : block forward
+// ESC Control-b : block backward
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, (quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur) sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
