@@ -1,0 +1,397 @@
+[login1 useraccount:16] ls
+[login1 useraccount:17] pwd
+/home1/00434/eijkhout/335class/useraccount
+[login1 useraccount:18] cd ..
+[login1 335class:19] rmdir useraccount/
+[login1 335class:20] clear
+[login1 335class:21] ls
+sds335fall2020/
+[login1 335class:22] touch myfirstfile
+[login1 335class:23] ls
+myfirstfile  sds335fall2020/
+[login1 335class:24] ls -l
+total 4
+-rw------- 1 eijkhout G-25072    0 Sep  3 14:12 myfirstfile
+drwx------ 5 eijkhout G-25072 4096 Aug 27 14:53 sds335fall2020/
+[login1 335class:25] cat myfirst file
+cat: myfirst: No such file or directory
+cat: file: No such file or directory
+[login1 335class:26] cat myfirstfile
+[login1 335class:27] cat > myfirstfile
+this is the contents.
+yay.
+[login1 335class:28] # I just did a Control-d
+[login1 335class:28] # to conclude the "cat"
+[login1 335class:28] cat myfirstfile
+this is the contents.
+yay.
+[login1 335class:29] cat > anotherfile
+1
+2
+3
+[login1 335class:30] ls
+anotherfile  myfirstfile  sds335fall2020/
+[login1 335class:31] mv myfirstfile IchangedMyMindAboutWhatToCallThisFile
+[login1 335class:32] ls
+anotherfile  IchangedMyMindAboutWhatToCallThisFile  sds335fall2020/
+[login1 335class:33] rm anotherfile
+[login1 335class:34] mkdir newdirectory
+[login1 335class:35] pwd
+/home1/00434/eijkhout/335class
+[login1 335class:36] ls
+IchangedMyMindAboutWhatToCallThisFile  newdirectory/  sds335fall2020/
+[login1 335class:37] # this is very useful:
+[login1 335class:37] alias ls
+alias ls='ls -F'
+[login1 335class:38] ls -l
+total 12
+-rw------- 1 eijkhout G-25072   27 Sep  3 14:16 IchangedMyMindAboutWhatToCallThisFile
+drwx------ 2 eijkhout G-25072 4096 Sep  3 14:28 newdirectory/
+drwx------ 5 eijkhout G-25072 4096 Aug 27 14:53 sds335fall2020/
+[login1 335class:39] cd newdirectory/
+[login1 newdirectory:40] pwd
+/home1/00434/eijkhout/335class/newdirectory
+[login1 newdirectory:41] touch FileInMyNewDirectory
+[login1 newdirectory:42] ls
+FileInMyNewDirectory
+[login1 newdirectory:43] pwd
+/home1/00434/eijkhout/335class/newdirectory
+[login1 newdirectory:44] cd ..
+[login1 335class:45] pwd
+/home1/00434/eijkhout/335class
+[login1 335class:46] ls
+IchangedMyMindAboutWhatToCallThisFile  newdirectory/  sds335fall2020/
+[login1 335class:47] ls newdirectory/
+FileInMyNewDirectory
+[login1 335class:48] cd newdirectory/
+[login1 newdirectory:49] mkdir nesteddirectory
+[login1 newdirectory:50] cd nesteddirectory/
+[login1 nesteddirectory:51] cat > deepdownfile
+deep contents
+[login1 nesteddirectory:52] pwd
+/home1/00434/eijkhout/335class/newdirectory/nesteddirectory
+[login1 nesteddirectory:53] cd ..
+[login1 newdirectory:54] cd ..
+[login1 335class:55] ls
+IchangedMyMindAboutWhatToCallThisFile  sds335fall2020/
+newdirectory/
+[login1 335class:55] ls # do ESC ?
+IchangedMyMindAboutWhatToCallThisFile  newdirectory/  sds335fall2020/
+[login1 335class:56] ls
+IchangedMyMindAboutWhatToCallThisFile  sds335fall2020/
+newdirectory/
+[login1 335class:56] ls newdirectory/
+FileInMyNewDirectory  nesteddirectory/
+[login1 335class:56] ls newdirectory/nesteddirectory/
+deepdownfile
+[login1 335class:56] ls newdirectory/nesteddirectory/deepdownfile
+newdirectory/nesteddirectory/deepdownfile
+[login1 335class:57] ls -l newdirectory/nesteddirectory/deepdownfile
+-rw------- 1 eijkhout G-25072 14 Sep  3 14:32 newdirectory/nesteddirectory/deepdownfile
+[login1 335class:58] cat newdirectory/nesteddirectory/deepdownfile
+deep contents
+[login1 335class:59] pwd
+/home1/00434/eijkhout/335class
+[login1 335class:60] cat /home1/00434/eijkhout/335class/newdirectory/nesteddirectory/deepdownfile
+deep contents
+[login1 335class:61] cd
+[login1 ~:62] pwd
+/home1/00434/eijkhout
+[login1 ~:63] cd 335class/newdirectory/
+[login1 newdirectory:64] # use cd .. for one level back
+[login1 newdirectory:64] cd ..
+[login1 335class:65] pwd
+/home1/00434/eijkhout/335class
+[login1 335class:66] cd /home1/00434/eijkhout/335class/newdirectory/nesteddirectory/../../newdirectory/../
+[login1 335class:67] ls
+IchangedMyMindAboutWhatToCallThisFile  newdirectory/  sds335fall2020/
+[login1 335class:68] mkdir otherdirectory
+[login1 335class:69] cd !$
+cd otherdirectory
+[login1 otherdirectory:70] # pwd
+[login1 otherdirectory:70] pwd
+/home1/00434/eijkhout/335class/otherdirectory
+[login1 otherdirectory:71] ls ..
+IchangedMyMindAboutWhatToCallThisFile  newdirectory/  otherdirectory/  sds335fall2020/
+[login1 otherdirectory:72] cp ../sds335fall2020/lectures/
+1 HPC intro.pdf      1 TACC overview.pdf  Architecture/        ReadMe.txt
+[login1 otherdirectory:72] cp ../sds335fall2020/lectures/../tutorials/
+emacs cheat sheet.pdf  hpc_unix.pdf           loremipsum.txt         Unix intro.pdf
+[login1 otherdirectory:72] cp ../sds335fall2020/lectures/../tutorials/loremipsum.txt latintext.txt
+[login1 otherdirectory:73] ls
+latintext.txt
+[login1 otherdirectory:74] cat latintext.txt
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui
+blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+et quas molestias excepturi sint occaecati cupiditate non provident,
+similique sunt in culpa qui officia deserunt mollitia animi, id est
+laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+cumque nihil impedit quo minus id quod maxime placeat facere possimus,
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+eveniet ut et voluptates repudiandae sint et molestiae non
+recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+reiciendis voluptatibus maiores alias consequatur aut perferendis
+doloribus asperiores repellat.
+[login1 otherdirectory:75] more !$ # poweruser alert: `!$' means `last word of the prev line
+more latintext.txt # poweruser alert: `!$' means `last word of the prev line
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui
+blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+et quas molestias excepturi sint occaecati cupiditate non provident,
+similique sunt in culpa qui officia deserunt mollitia animi, id est
+laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+cumque nihil impedit quo minus id quod maxime placeat facere possimus,
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+eveniet ut et voluptates repudiandae sint et molestiae non
+recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+reiciendis voluptatibus maiores alias consequatur aut perferendis
+doloribus asperiores repellat.
+[login1 otherdirectory:76] cat latintext.txt
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+...skipping...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+ab illo inventore veritatis et quasi architecto beatae vitae dicta
+sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui
+blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+et quas molestias excepturi sint occaecati cupiditate non provident,
+similique sunt in culpa qui officia deserunt mollitia animi, id est
+laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+cumque nihil impedit quo minus id quod maxime placeat facere possimus,
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+eveniet ut et voluptates repudiandae sint et molestiae non
+recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+reiciendis voluptatibus maiores alias consequatur aut perferendis
+doloribus asperiores repellat.
+...skipping...
+
+                   SUMMARY OF LESS COMMANDS
+
+      Commands marked with * may be preceded by a number, N.
+      Notes in parentheses indicate the behavior if N is given.
+      A key preceded by a caret indicates the Ctrl key; thus ^K is ctrl-K.
+
+  h  H                 Display this help.
+  q  :q  Q  :Q  ZZ     Exit.
+ ---------------------------------------------------------------------------
+
+                           MOVING
+
+  e  ^E  j  ^N  CR  *  Forward  one line   (or N lines).
+  y  ^Y  k  ^K  ^P  *  Backward one line   (or N lines).
+  f  ^F  ^V  SPACE  *  Forward  one window (or N lines).
+  b  ^B  ESC-v      *  Backward one window (or N lines).
+  z                 *  Forward  one window (and set window to N).
+  w                 *  Backward one window (and set window to N).
+  ESC-SPACE         *  Forward  one window, but don't stop at end-of-file.
+  d  ^D             *  Forward  one half-window (and set half-window to N).
+  u  ^U             *  Backward one half-window (and set half-window to N).
+  ESC-)  RightArrow *  Left  one half screen width (or N positions).
+  ESC-(  LeftArrow  *  Right one half screen width (or N positions).
+  F                    Forward forever; like "tail -f".
+  r  ^R  ^L            Repaint screen.
+  R                    Repaint screen, discarding buffered input.
+        ---------------------------------------------------
+        Default "window" is the screen height.
+        Default "half-window" is half of the screen height.
+HELP -- Press RETURN for more, or q when done...skipping...
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+qui dolorem eum fugiat quo voluptas nulla pariatur?
+
+At vero eos et accusamus et iusto odio dignissimos ducimus qui
+blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+et quas molestias excepturi sint occaecati cupiditate non provident,
+similique sunt in culpa qui officia deserunt mollitia animi, id est
+laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+cumque nihil impedit quo minus id quod maxime placeat facere possimus,
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+eveniet ut et voluptates repudiandae sint et molestiae non
+recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+reiciendis voluptatibus maiores alias consequatur aut perferendis
+doloribus asperiores repellat.
+[login1 otherdirectory:77] less !$
+less latintext.txt
+[login1 otherdirectory:78] # less is driven by one-letter commands:
+[login1 otherdirectory:78] # return g G  u d
+[login1 otherdirectory:78] head latintext.txt
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+[login1 otherdirectory:79] tail latintext.txt
+similique sunt in culpa qui officia deserunt mollitia animi, id est
+laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+cumque nihil impedit quo minus id quod maxime placeat facere possimus,
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe
+eveniet ut et voluptates repudiandae sint et molestiae non
+recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+reiciendis voluptatibus maiores alias consequatur aut perferendis
+doloribus asperiores repellat.
+[login1 otherdirectory:80] grep temp latintext.txt
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+[login1 otherdirectory:81] grep temp latintext.txt > latintemps.txt
+[login1 otherdirectory:82] cat !$
+cat latintemps.txt
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+omnis voluptas assumenda est, omnis dolor repellendus. Temporibus
+[login1 otherdirectory:83] head latinte
+latintemps.txt  latintext.txt
+[login1 otherdirectory:83] head latintext.txt
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+aliquip ex ea commodo consequat. Duis aute irure dolor in
+reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+[login1 otherdirectory:84] head -n 1 latintext.txt
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+[login1 otherdirectory:85] grep temp latintext.txt | head -n 1
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+[login1 otherdirectory:86] # the | character is called a pipe
+[login1 otherdirectory:86] # assignment: find the 3rd line that has "temp" in it.
+[login1 otherdirectory:86] grep temp latintext.txt | head -n 3
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+[login1 otherdirectory:87] grep temp latintext.txt | head -n 3 | tail -n 1
+distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
