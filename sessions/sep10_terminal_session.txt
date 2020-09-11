@@ -1,0 +1,323 @@
+Last login: Thu Sep  3 13:53:05 on ttys002
+Victors-iMac-2020:~ victoreijkhout$ ssh eijkhout@frontera.tacc.ute
+The authenticity of host 'frontera.tacc.ute (23.202.231.169)' can't be established.
+ECDSA key fingerprint is SHA256:HnzBy7BAfkMCT4uIcdLrpoWiOrnhHhN8k7XMbbB2Epk.
+Are you sure you want to continue connecting (yes/no)? no
+Host key verification failed.
+Victors-iMac-2020:~ victoreijkhout$ ssh eijkhout@staff.frontera.tacc.utexas.edu
+To access the system:
+
+1) If not using ssh-keys, please enter your TACC password at the password prompt
+2) At the TACC Token prompt, enter your 6-digit code followed by <return>.
+
+Password:
+TACC Token Code:
+Last login: Wed Sep  9 12:06:04 2020 from 108.248.87.246
+------------------------------------------------------------------------------
+                   Welcome to the Frontera Supercomputer
+      Texas Advanced Computing Center, The University of Texas at Austin
+------------------------------------------------------------------------------
+
+              ** Unauthorized use/access is prohibited. **
+
+If you log on to this computer system, you acknowledge your awareness
+of and concurrence with the UT Austin Acceptable Use Policy. The
+University will prosecute violators to the full extent of the law.
+
+TACC Usage Policies:
+http://www.tacc.utexas.edu/user-services/usage-policies/
+______________________________________________________________________________
+
+Welcome to Frontera, *please* read these important system notes:
+
+--> Frontera user documentation is available at:
+       https://portal.tacc.utexas.edu/user-guides/frontera
+
+
+=======================================================================
+
+The following filesystem(s) are currently unavailable:  /work /scratch1
+If the problem persists beyond a few minutes, please see
+https://portal.tacc.utexas.edu/user-news for details and updates.
+
+=======================================================================
+
+--------------------- Project balances for user eijkhout ----------------------
+| Name           Avail SUs     Expires | Name           Avail SUs     Expires |
+| CompEdu            24999  2020-09-30 | DMS20008            9373  2021-06-30 |
+| DMS20016            2000  2020-12-31 | A-ccsc            141577  2020-09-30 |
+------------------------ Disk quotas for user eijkhout ------------------------
+| Disk         Usage (GB)     Limit    %Used   File Usage       Limit   %Used |
+| /home1              1.2      25.0     4.72        16450      400000    4.11 |
+-------------------------------------------------------------------------------
+
+Tip 104   (See "module help tacc_tips" for features or how to disable)
+
+   To bypass any alias (but not shell function) for "foo" do "\foo".
+
+[staff sds335fall2020:5] git pull
+remote: Enumerating objects: 6, done.
+remote: Counting objects: 100% (6/6), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 19 (delta 2), reused 4 (delta 2), pack-reused 13
+Unpacking objects: 100% (19/19), done.
+From https://github.com/TACC/sds335fall2020
+   3b45308..a842ff7  master     -> origin/master
+Updating 3b45308..a842ff7
+Fast-forward
+ EijkhoutIntroSciProgramming.pdf            | Bin 35430545 -> 0 bytes
+ EijkhoutIntroToHPC.pdf                     | Bin 0 -> 59265604 bytes
+ lectures/Architecture/STC20_1_part_1_2.pdf | Bin 0 -> 2548897 bytes
+ lectures/hpc_unix.pdf                      | Bin 0 -> 93925 bytes
+ tutorials/hpc_unix.pdf                     | Bin 46704 -> 86245 bytes
+ 5 files changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 EijkhoutIntroSciProgramming.pdf
+ create mode 100644 EijkhoutIntroToHPC.pdf
+ create mode 100644 lectures/Architecture/STC20_1_part_1_2.pdf
+ create mode 100644 lectures/hpc_unix.pdf
+[staff sds335fall2020:6] ls
+EijkhoutIntroToHPC.pdf	 inclusivity.pdf  lectures/  README  sessions/  stc335_syllabus_2020fall.pdf  tutorials/
+[staff sds335fall2020:7] ls > directorycontents
+[staff sds335fall2020:8] less !$
+less directorycontents
+[staff sds335fall2020:9] cat !$
+cat directorycontents
+directorycontents
+EijkhoutIntroToHPC.pdf
+inclusivity.pdf
+lectures/
+README
+sessions/
+stc335_syllabus_2020fall.pdf
+tutorials/
+[staff sds335fall2020:10] ls -l > directorycontents
+[staff sds335fall2020:11] less !$
+less directorycontents
+[staff sds335fall2020:12] ls -l >> directorycontents
+[staff sds335fall2020:13] less directorycontents
+[staff sds335fall2020:14] ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures/  README  sessions/  stc335_syllabus_2020fall.pdf	tutorials/
+[staff sds335fall2020:15] cd tutorials/
+[staff tutorials:16] wc loremipsum.txt
+  35  318 2159 loremipsum.txt
+[staff tutorials:17] # word count
+[staff tutorials:17] wc -l loremipsum.txt
+35 loremipsum.txt
+[staff tutorials:18] ls | wc -l
+4
+[staff tutorials:19] ls
+emacs cheat sheet.pdf  hpc_unix.pdf  loremipsum.txt  Unix intro.pdf
+[staff tutorials:20] ls -l
+total 540
+-rw------- 1 eijkhout G-25072  99608 Aug 27 14:53 emacs cheat sheet.pdf
+-rw------- 1 eijkhout G-25072  86245 Sep 10 14:19 hpc_unix.pdf
+-rw------- 1 eijkhout G-25072   2159 Sep  3 14:05 loremipsum.txt
+-rw------- 1 eijkhout G-25072 355168 Sep  3 14:05 Unix intro.pdf
+[staff tutorials:21] echo "this is a string"
+this is a string
+[staff tutorials:22] echo "There are wc -l loremipsum.txt lines in the lorem ipsum file"
+There are wc -l loremipsum.txt lines in the lorem ipsum file
+[staff tutorials:23] echo "There are ` wc -l loremipsum.txt ` lines in the lorem ipsum file"
+There are 35 loremipsum.txt lines in the lorem ipsum file
+[staff tutorials:24] wc -l loremipsum.txt
+35 loremipsum.txt
+[staff tutorials:25] echo "There are ` wc -l < loremipsum.txt ` lines in the lorem ipsum file"
+There are 35 lines in the lorem ipsum file
+[staff tutorials:26] echo "There are ` cat loremipsum.txt | wc -l ` lines in the lorem ipsum file"
+There are 35 lines in the lorem ipsum file
+[staff tutorials:27] ls
+emacs cheat sheet.pdf  hpc_unix.pdf  loremipsum.txt  Unix intro.pdf
+[staff tutorials:28] which ls
+alias ls='ls -F'
+      /bin/ls
+[staff tutorials:29] ls /bin/ls
+/bin/ls*
+[staff tutorials:30] ls -l !$
+ls -l /bin/ls
+-rwxr-xr-x 1 root root 117608 Aug 20  2019 /bin/ls*
+[staff tutorials:31] file !$
+file /bin/ls
+/bin/ls: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.32, BuildID[sha1]=aaf05615b6c91d3cbb076af81aeff531c5d7dfd9, stripped
+[staff tutorials:32] echo $PATH
+/opt/apps/xalt/xalt/bin:/opt/apps/hwloc/1.11.12/bin:/opt/apps/pmix/3.1.4/bin:/opt/apps/cmake/3.16.1/bin:/opt/apps/intel19/python3/3.7.0/bin:/opt/apps/autotools/1.2/bin:/opt/apps/git/2.24.1/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/bin/intel64:/opt/apps/gcc/8.3.0/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/opt/ibutils/bin:/opt/ddn/ime/bin:/opt/dell/srvadmin/bin:.
+[staff tutorials:33] pwd
+/home1/00434/eijkhout/335class/sds335fall2020/tutorials
+[staff tutorials:34] ls
+emacs cheat sheet.pdf  hpc_unix.pdf  loremipsum.txt  Unix intro.pdf
+[staff tutorials:35] cd ..
+[staff sds335fall2020:36] ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures/  README  sessions/  stc335_syllabus_2020fall.pdf	tutorials/
+[staff sds335fall2020:37] /bin/sl
+-bash: /bin/sl: No such file or directory
+[staff sds335fall2020:38] /bin/ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures  README  sessions	stc335_syllabus_2020fall.pdf  tutorials
+[staff sds335fall2020:39] # the alias puts a slash after directories.
+[staff sds335fall2020:39] a=5
+[staff sds335fall2020:40] a= 7
+-bash: 7: command not found
+[staff sds335fall2020:41] a =8
+-bash: a: command not found
+[staff sds335fall2020:42] # no spaces around the equals!
+[staff sds335fall2020:42] a=5
+[staff sds335fall2020:43] a
+-bash: a: command not found
+[staff sds335fall2020:44] echo $a
+5
+[staff sds335fall2020:45] b=7
+[staff sds335fall2020:46] c=$a+$b
+[staff sds335fall2020:47] echo $c
+5+7
+[staff sds335fall2020:48] # the shell is textbased!
+[staff sds335fall2020:48] c=$(( a + b ))
+[staff sds335fall2020:49] echo $c
+12
+[staff sds335fall2020:50] a=foo
+[staff sds335fall2020:51] if [ $a = "foo" ] ; then echo "that was foo!" ; else echo "that was not foo!" ; fi
+-bash: !": event not found
+[staff sds335fall2020:51] if [ $a = "foo" ] ; then echo "that was foo" ; else echo "that was not foo" ; fi
+that was foo
+[staff sds335fall2020:52] if [ $a = "foo" ] ; then
+> echo yes
+> else
+> echo no
+> fi
+yes
+[staff sds335fall2020:53] if [ $a -eq 3 ] ; then  echo yes; else echo no; fi
+-bash: [: foo: integer expression expected
+no
+[staff sds335fall2020:54] echo $a
+foo
+[staff sds335fall2020:55] a=5
+[staff sds335fall2020:56] !if
+if [ $a -eq 3 ] ; then  echo yes; else echo no; fi
+no
+[staff sds335fall2020:57] ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures/  README  sessions/  stc335_syllabus_2020fall.pdf	tutorials/
+[staff sds335fall2020:58] if [ -f README ] ; then echo exist ; fi
+exist
+[staff sds335fall2020:59] if [ ! -f README.txt ] ; then echo "not exist" ; else echo yes ; fi
+not exist
+[staff sds335fall2020:60] for x in 1 2 3 ; do echo foo ; done
+foo
+foo
+foo
+[staff sds335fall2020:61] for x in 1 2 3 ; do echo $x ; done
+1
+2
+3
+[staff sds335fall2020:62] for xx in 1 2 3 ; do echo $xx ; done
+1
+2
+3
+[staff sds335fall2020:63] ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures/  README  sessions/  stc335_syllabus_2020fall.pdf	tutorials/
+[staff sds335fall2020:64] for pdf in *.pdf ; do echo "pdf file: $pdf" ; done
+pdf file: EijkhoutIntroToHPC.pdf
+pdf file: inclusivity.pdf
+pdf file: stc335_syllabus_2020fall.pdf
+[staff sds335fall2020:65] for d in */ ; do echo $d ; done
+lectures/
+sessions/
+tutorials/
+[staff sds335fall2020:66] unalias ls
+[staff sds335fall2020:67] ls
+directorycontents  EijkhoutIntroToHPC.pdf  inclusivity.pdf  lectures  README  sessions	stc335_syllabus_2020fall.pdf  tutorials
+[staff sds335fall2020:68] for d in */ ; do echo $d ; done
+lectures/
+sessions/
+tutorials/
+[staff sds335fall2020:69] for d in * ; do if [ -d $d ] ; then echo $d ; fi ; done
+lectures
+sessions
+tutorials
+[staff sds335fall2020:70] seq 2 9
+2
+3
+4
+5
+6
+7
+8
+9
+[staff sds335fall2020:71] for i in `seq 2 9` ; do echo $i ; done
+2
+3
+4
+5
+6
+7
+8
+9
+[staff sds335fall2020:72] for i in `seq 2 9` ; do echo $i$i ; done
+22
+33
+44
+55
+66
+77
+88
+99
+[staff sds335fall2020:73] emacs script.sh
+
+[staff sds335fall2020:74] cat script.sh
+#!/bin/bash
+
+echo foo
+[staff sds335fall2020:75] script.sh
+-bash: ./script.sh: Permission denied
+[staff sds335fall2020:76] ls !$
+ls script.sh
+script.sh
+[staff sds335fall2020:77] ls -l !$
+ls -l script.sh
+-rw------- 1 eijkhout G-25072 23 Sep 10 15:07 script.sh
+[staff sds335fall2020:78] # first make it executable:
+[staff sds335fall2020:78] chmod +x script.sh
+[staff sds335fall2020:79] ls -l !$
+ls -l script.sh
+-rwx------ 1 eijkhout G-25072 23 Sep 10 15:07 script.sh
+[staff sds335fall2020:80] script.sh
+foo
+[staff sds335fall2020:81] echo $PATH
+/opt/apps/xalt/xalt/bin:/opt/apps/hwloc/1.11.12/bin:/opt/apps/pmix/3.1.4/bin:/opt/apps/cmake/3.16.1/bin:/opt/apps/intel19/python3/3.7.0/bin:/opt/apps/autotools/1.2/bin:/opt/apps/git/2.24.1/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/bin/intel64:/opt/apps/gcc/8.3.0/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/opt/ibutils/bin:/opt/ddn/ime/bin:/opt/dell/srvadmin/bin:.
+[staff sds335fall2020:82] ./script.sh
+foo
+[staff sds335fall2020:83] !em
+emacs script.sh
+
+[1]+  Stopped                 emacs script.sh
+[staff sds335fall2020:84] ./script.sh bar
+foo
+[staff sds335fall2020:85] fg
+emacs script.sh
+
+[1]+  Stopped                 emacs script.sh
+[staff sds335fall2020:86] # we have introduced a parameter:
+[staff sds335fall2020:86] cat script.sh
+#!/bin/bash
+
+echo $1
+
+[staff sds335fall2020:87] !./
+./script.sh bar
+bar
+[staff sds335fall2020:88] ./script.sh bar
+bar
+[staff sds335fall2020:89] ./script.sh foo bar
+foo
+[staff sds335fall2020:90] fg
+emacs script.sh
+
+[1]+  Stopped                 emacs script.sh
+[staff sds335fall2020:91] !cat
+cat script.sh
+#!/bin/bash
+
+echo "there are $# arguments"
+echo $1
+
+[staff sds335fall2020:92] !./
+./script.sh foo bar
+there are 2 arguments
+foo
+[staff sds335fall2020:93]
