@@ -1,0 +1,478 @@
+sds335fall2020/labs/library
+[staff library:12] ls
+main.c sub1.c	   sub2.c
+[staff library:13] less *.c
+[staff library:14] cat main.c
+/****************************************************************
+ ****
+ **** This program source is part of
+ **** Introduction to High-performance Scientific Computing
+ **** by Victor Eijkhout
+ **** copyright Victor Eijkhout 2011-2020
+ ****
+ **** fooprog.c : simple main program using external function
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+void foo(char*);
+void bar(char*);
+
+int main() {
+  foo("hello");
+  bar("world");
+  return 0;
+}
+[staff library:15] icc !$
+icc main.c
+/opt/apps/gcc/8.3.0/bin/ld: /tmp/iccn1oSvh.o: in function `main':
+main.c:(.text+0x30): undefined reference to `foo'
+/opt/apps/gcc/8.3.0/bin/ld: main.c:(.text+0x3a): undefined reference to `bar'
+[staff library:16] icc -o foobar main.c sub1.c sub2.c
+[staff library:17] ./foobar
+Text one: hello
+Text two: world
+[staff library:18] icc -c main.c
+[staff library:19] ls
+foobar*  main.c  main.o  sub1.c  sub2.c
+[staff library:20] for cfile in *.c ; do icc -c ; done
+icc: command line error: no files specified; for help type "icc -help"
+icc: command line error: no files specified; for help type "icc -help"
+icc: command line error: no files specified; for help type "icc -help"
+[staff library:21] for cfile in *.c ; do icc -c $cfile ; done
+[staff library:22] ls
+foobar*  main.c  main.o  sub1.c  sub1.o  sub2.c  sub2.o
+[staff library:23] # next the linking stage
+[staff library:23] icc -o foobar *.o
+[staff library:24] ./foobar
+Text one: hello
+Text two: world
+[staff library:25] rm *.o
+[staff library:26] icc -c *.c
+[staff library:27] ls
+foobar*  main.c  main.o  sub1.c  sub1.o  sub2.c  sub2.o
+[staff library:28] # let's start making a library
+[staff library:28] emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:29] rm this_file_does_not_exist
+rm: cannot remove ‘this_file_does_not_exist’: No such file or directory
+[staff library:30] rm -f this_file_does_not_exist
+[staff library:31] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:32] cat staticlib.sh
+rm -f *.o
+
+icc -c sub1.c
+icc -c sub2.c
+
+mkdir libs
+
+# new: the `ar' command for archive
+ar cr libs/libfoobar.a sub1.o
+ar cr libs/libfoobar.a sub2.o
+
+# C-k : scoop up a line (twice for the line end)
+# C-y : paste back.
+[staff library:33] . staticlib.sh
+[staff library:34] # what did this do?
+[staff library:34] # first: `mkdir'
+[staff library:34] ls
+foobar*  libs/	   main.c	staticlib.sh  staticlib.sh~  sub1.c  sub1.o  sub2.c  sub2.o
+[staff library:35] # yes, we hav a `libs' directory
+[staff library:35] # what's in it?
+[staff library:35] ls libs
+libfoobar.a
+[staff library:36] # let's use `nm' to investigate the library
+[staff library:36] nm libs/libfoobar.a
+
+sub1.o:
+0000000000000000 T foo
+                 U printf
+
+sub2.o:
+0000000000000000 T bar
+                 U printf
+[staff library:37] # listing of all object files int he library, and what's in each
+[staff library:37] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+void foo(char *s) {
+  printf("Text one: %s\n",s);
+  return;
+}
+[staff library:38] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:39] mkdir libs
+mkdir: cannot create directory ‘libs’: File exists
+[staff library:40] # add the -p option:
+[staff library:40] mkdir -p libs
+[staff library:41] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:42] # let's update our script:
+[staff library:42] cat staticlib.sh
+rm -f *.o
+
+mkdir libs
+
+icc -c sub1.c
+icc -c sub2.c
+
+# new: the `ar' command for archive
+ar cr libs/libfoobar.a sub1.o
+ar cr libs/libfoobar.a sub2.o
+
+# C-k : scoop up a line (twice for the line end)
+# C-y : paste back.
+[staff library:43] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:44] . staticlib.sh
+main.c main
+sub1.c sub1
+sub2.c sub2
+[staff library:45] # if $cfile == myfile.c
+[staff library:45] # then ${cfile%%.c} cuts off the .c at the end
+[staff library:45] cfile=myfile.c
+[staff library:46] echo ${cfile%%.c}
+myfile
+[staff library:47] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:48] #current state of the script:
+[staff library:48] cat staticlib.sh
+rm -f *.o
+
+mkdir -p libs
+
+for cfile in *.c ; do
+  icc -c $cfile
+  #echo "$cfile ${cfile%%.c}"
+  ar cr libs/libfoobar.a
+done
+
+# C-k : scoop up a line (twice for the line end)
+# C-y : paste back.
+[staff library:49] # to execute:
+[staff library:49] . staticlib.sh
+[staff library:50] # would be wrong:  ar cr libs/libfoobar.a $cfile
+[staff library:50] # so how do you get the object file?
+[staff library:50] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:51] . staticlib.sh
+[staff library:52] nm libs/libfoobar.a
+
+main.o:
+                 U bar
+                 U foo
+                 U __intel_new_feature_proc_init
+0000000000000000 T main
+
+sub1.o:
+0000000000000000 T foo
+                 U printf
+
+sub2.o:
+0000000000000000 T bar
+                 U printf
+[staff library:53] # oops: we added the main to the library.
+[staff library:53] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:54] . staticlib.sh
+-bash: LIBRARY_FILES: command not found
+[staff library:55] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:56] . staticlib.sh
+-bash: ./sub2.c: Permission denied
+[staff library:57] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:58] . staticlib.sh
+[staff library:59] !nm
+nm libs/libfoobar.a
+
+sub1.o:
+0000000000000000 T foo
+                 U printf
+
+sub2.o:
+0000000000000000 T bar
+                 U printf
+[staff library:60] # updated script
+[staff library:60] cat staticlib.sh
+# execute this script with:
+# . staticlib.sh
+# "dot space"
+
+rm -f *.o
+
+mkdir -p libs
+rm -f libs/libfoobar.a
+
+LIBRARY_FILES="sub1.c sub2.c"
+
+for cfile in ${LIBRARY_FILES} ; do
+  icc -c $cfile
+  #echo "$cfile ${cfile%%.c}"
+File Edit Options Buffers Tools Sh-Script Help
+# execute this script with:
+# . staticlib.sh
+# "dot space"
+
+rm -f *.o
+
+mkdir -p libs
+rm -f libs/libfoobar.a
+
+LIBRARY_FILES="sub1.c sub2.c"
+
+for cfile in ${LIBRARY_FILES} ; do
+  icc -c $cfile
+  #echo "$cfile ${cfile%%.c}"
+  # the next line is incomplete: needs to add the object file
+  ar cr libs/libfoobar.a ${cfile%%.c}.o
+done
+
+# explicit form:
+# icc -o foobar main.o libs/libfoobar.a
+# separate "-L": library directory / "-l" library name
+icc -o foobar main.o -Llibs -lfoobar
+
+# C-k : scoop up a line (twice for the line end)
+-UUU:**--F1  staticlib.sh   Top L21    (Shell-script[sh]) -----------------------------------------
+  # the next line is incomplete: needs to add the object file
+  ar cr libs/libfoobar.a ${cfile%%.c}.o
+done
+
+# C-k : scoop up a line (twice for the line end)
+# C-y : paste back.
+[staff library:61] nm sub2.o
+0000000000000000 T bar
+                 U printf
+[staff library:62] obj
+objcopy  objdump
+[staff library:62] objdump -d sub2.o
+
+sub2.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <bar>:
+   0:		 48 89 fe		mov    %rdi,%rsi
+   3:		 bf 00 00 00 00       	mov    $0x0,%edi
+   8:		 33 c0                	xor    %eax,%eax
+   a:		 e9 00 00 00 00       	jmpq   f <bar+0xf>
+   f:		 90                   	nop
+[staff library:63] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:64] icc -o foobar main.o -Llibs -lfoobar
+icc: error #10236: File not found:  'main.o'
+[staff library:65] icc -c main.c
+[staff library:66] icc -o foobar main.o -Llibs -lfoobar
+[staff library:67] ./foobar
+Text one: hello
+Text two: world
+[staff library:68] cp foobar foobar_static
+[staff library:69] # this was static library
+[staff library:69] # now we are going to dynamic/shared libraries
+[staff library:69] cp staticlib.sh dynamiclib.sh
+[staff library:70] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:71] cat dynamiclib.sh
+
+mkdir -p libs
+rm -f libs/libfoobar.a libfoobar.so
+
+LIBRARY_FILES="sub1.c sub2.c"
+
+for cfile in ${LIBRARY_FILES} ; do
+  # add a "shared" flag:
+  icc -shared -c $cfile
+  # instead of:
+  #ar cr libs/libfoobar.a ${cfile%%.c}.o
+done
+
+
+# explicit form:
+# icc -o foobar main.o libs/libfoobar.a
+# separate "-L": library directory / "-l" library name
+#icc -o foobar main.o -Llibs -lfoobar
+[staff library:72] . dynamiclib.sh
+[staff library:73] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:74] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:75] icc -o libs/libfoobar.so sub1.o sub2.o
+/opt/apps/gcc/8.3.0/bin/ld: /lib/../lib64/crt1.o: in function `_start':
+(.text+0x20): undefined reference to `main'
+[staff library:76] icc -shared -o libs/libfoobar.so sub1.o sub2.o
+/opt/apps/gcc/8.3.0/bin/ld: sub1.o: relocation R_X86_64_32 against `.rodata.str1.4' can not be used when making a shared object; recompile with -fPIC
+/opt/apps/gcc/8.3.0/bin/ld: sub2.o: relocation R_X86_64_32 against `.rodata.str1.4' can not be used when making a shared object; recompile with -fPIC
+/opt/apps/gcc/8.3.0/bin/ld: final link failed: nonrepresentable section on output
+[staff library:77] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:78] . dynamiclib.sh
+[staff library:79] cat dynamiclib.sh
+
+mkdir -p libs
+rm -f libs/libfoobar.a libs/libfoobar.so
+
+LIBRARY_FILES="sub1.c sub2.c"
+
+for cfile in ${LIBRARY_FILES} ; do
+  # add a "shared" flag:
+  icc -fPIC -c $cfile
+  # instead of:
+  #ar cr libs/libfoobar.a ${cfile%%.c}.o
+done
+icc -shared -o libs/libfoobar.so sub1.o sub2.o
+
+# explicit form:
+# icc -o foobar main.o libs/libfoobar.a
+# separate "-L": library directory / "-l" library name
+#icc -o foobar main.o -Llibs -lfoobar
+[staff library:80] ls libs
+libfoobar.so*
+[staff library:81] nm libs/libfoobar.so
+0000000000001130 T bar
+0000000000004028 B __bss_start
+0000000000004028 b completed.7243
+                 w __cxa_finalize@@GLIBC_2.2.5
+0000000000001050 t deregister_tm_clones
+00000000000010c0 t __do_global_dtors_aux
+0000000000003d98 t __do_global_dtors_aux_fini_array_entry
+0000000000004020 d __dso_handle
+0000000000003da0 d _DYNAMIC
+0000000000004028 D _edata
+0000000000004030 B _end
+0000000000001150 T _fini
+0000000000001110 T foo
+0000000000001100 t frame_dummy
+0000000000003d90 t __frame_dummy_init_array_entry
+00000000000020d4 r __FRAME_END__
+0000000000004000 d _GLOBAL_OFFSET_TABLE_
+                 w __gmon_start__
+0000000000002020 r __GNU_EH_FRAME_HDR
+0000000000001000 T _init
+                 w _ITM_deregisterTMCloneTable
+                 w _ITM_registerTMCloneTable
+                 U printf@@GLIBC_2.2.5
+0000000000001080 t register_tm_clones
+0000000000004028 d __TMC_END__
+[staff library:82] fg
+emacs staticlib.sh
+
+[1]+  Stopped                 emacs staticlib.sh
+[staff library:83] # now I have a dynamic library
+[staff library:83] # and I link that the same way:
+[staff library:83] icc -o foobar main.o -Llibs -lfoobar
+[staff library:84] !cp:p
+cp staticlib.sh dynamiclib.sh
+[staff library:84] ls -l foobar
+-rwx------ 1 eijkhout G-25072 32624 Sep 24 15:04 foobar*
+[staff library:85] ./foobar
+./foobar: error while loading shared libraries: libfoobar.so: cannot open shared object file: No such file or directory
+[staff library:86] # when you did the link line, you told it where the library was,
+[staff library:86] # and that's enough to generate a program file,
+[staff library:86] # but the library is not baked in, so when you execute the program
+[staff library:86] # it is missing the library routines
+[staff library:86] which ls
+alias ls='ls -F'
+      /bin/ls
+[staff library:87] which \ls
+alias ls='ls -F'
+      /bin/ls
+[staff library:88] echo $PATH
+/opt/apps/xalt/xalt/bin:/opt/apps/hwloc/1.11.12/bin:/opt/apps/pmix/3.1.4/bin:/opt/apps/cmake/3.16.1/bin:/opt/apps/intel19/python3/3.7.0/bin:/opt/apps/autotools/1.2/bin:/opt/apps/git/2.24.1/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/bin/intel64:/opt/apps/gcc/8.3.0/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/opt/ibutils/bin:/opt/ddn/ime/bin:/opt/dell/srvadmin/bin:.:/work/00434/eijkhout/testers335394fall2020
+[staff library:89] echo $LD_LIBRARY_PATH
+/opt/apps/hwloc/1.11.12/lib:/opt/apps/pmix/3.1.4/lib:/opt/apps/intel19/python3/3.7.0/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib:/opt/intel/debugger_2020/libipt/intel64/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/daal/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/tbb/lib/intel64_lin/gcc4.7:/opt/intel/compilers_and_libraries_2020.1.217/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2020.1.217/linux/compiler/lib/intel64_lin:/opt/apps/gcc/8.3.0/lib64:/opt/apps/gcc/8.3.0/lib
+[staff library:90] LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:libs
+[staff library:91] ./foobar
+Text one: hello
+Text two: world
+[staff library:92] module reset
+Resetting modules to system default. Reseting $MODULEPATH back to system default. All extra directories will be removed from $MODULEPATH.
+[staff library:93] echo $PATH
+/opt/apps/xalt/xalt/bin:/opt/apps/hwloc/1.11.12/bin:/opt/apps/pmix/3.1.4/bin:/opt/apps/cmake/3.16.1/bin:/opt/apps/intel19/python3/3.7.0/bin:/opt/apps/autotools/1.2/bin:/opt/apps/git/2.24.1/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/opt/intel/compilers_and_libraries_2020.1.217/linux/bin/intel64:/opt/apps/gcc/8.3.0/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/opt/ibutils/bin:/opt/ddn/ime/bin:/opt/dell/srvadmin/bin:/work/00434/eijkhout/testers335394fall2020:.
+[staff library:94] echo $LD_LIBRARY_PATH
+/opt/apps/hwloc/1.11.12/lib:/opt/apps/pmix/3.1.4/lib:/opt/apps/intel19/python3/3.7.0/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib:/opt/intel/debugger_2020/libipt/intel64/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/daal/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/tbb/lib/intel64_lin/gcc4.7:/opt/intel/compilers_and_libraries_2020.1.217/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2020.1.217/linux/compiler/lib/intel64_lin:/opt/apps/gcc/8.3.0/lib64:/opt/apps/gcc/8.3.0/lib:libs
+[staff library:95] LD_LIBRARY_PATH=/opt/apps/hwloc/1.11.12/lib:/opt/apps/pmix/3.1.4/lib:/opt/apps/intel19/python3/3.7.0/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib:/opt/intel/debugger_2020/libipt/intel64/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/daal/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/tbb/lib/intel64_lin/gcc4.7:/opt/intel/compilers_and_libraries_2020.1.217/linux/mkl/lib/intel64_lin:/opt/intel/compilers_and_libraries_2020.1.217/linux/ipp/lib/intel64:/opt/intel/compilers_and_libraries_2020.1.217/linux/compiler/lib/intel64_lin:/opt/apps/gcc/8.3.0/lib64:/opt/apps/gcc/8.3.0/lib
+[staff library:96] ./foobar
+./foobar: error while loading shared libraries: libfoobar.so: cannot open shared object file: No such file or directory
+[staff library:97] ldd foobar
+       linux-vdso.so.1 =>  (0x00007fff411a0000)
+       /opt/apps/xalt/xalt/lib64/libxalt_init.so (0x00002b1d5a450000)
+       libfoobar.so => not found
+       libm.so.6 => /lib64/libm.so.6 (0x00002b1d5a693000)
+       libgcc_s.so.1 => /opt/apps/gcc/8.3.0/lib64/libgcc_s.so.1 (0x00002b1d5a272000)
+       libc.so.6 => /lib64/libc.so.6 (0x00002b1d5a995000)
+       libdl.so.2 => /lib64/libdl.so.2 (0x00002b1d5ad63000)
+       libcurl.so.4 => /lib64/libcurl.so.4 (0x00002b1d5af67000)
+       /lib64/ld-linux-x86-64.so.2 (0x00002b1d5a22c000)
+       libidn.so.11 => /lib64/libidn.so.11 (0x00002b1d5b1d1000)
+       libssh2.so.1 => /lib64/libssh2.so.1 (0x00002b1d5b404000)
+       libssl3.so => /lib64/libssl3.so (0x00002b1d5b631000)
+       libsmime3.so => /lib64/libsmime3.so (0x00002b1d5b88a000)
+       libnss3.so => /lib64/libnss3.so (0x00002b1d5bab2000)
+       libnssutil3.so => /lib64/libnssutil3.so (0x00002b1d5bde1000)
+       libplds4.so => /lib64/libplds4.so (0x00002b1d5c011000)
+       libplc4.so => /lib64/libplc4.so (0x00002b1d5c215000)
+       libnspr4.so => /lib64/libnspr4.so (0x00002b1d5c41a000)
+       libpthread.so.0 => /lib64/libpthread.so.0 (0x00002b1d5c658000)
+       libgssapi_krb5.so.2 => /lib64/libgssapi_krb5.so.2 (0x00002b1d5c874000)
+       libkrb5.so.3 => /lib64/libkrb5.so.3 (0x00002b1d5cac1000)
+       libk5crypto.so.3 => /lib64/libk5crypto.so.3 (0x00002b1d5cdaa000)
+       libcom_err.so.2 => /lib64/libcom_err.so.2 (0x00002b1d5cfdd000)
+       liblber-2.4.so.2 => /lib64/liblber-2.4.so.2 (0x00002b1d5d1e1000)
+       libldap-2.4.so.2 => /lib64/libldap-2.4.so.2 (0x00002b1d5d3f0000)
+       libz.so.1 => /lib64/libz.so.1 (0x00002b1d5d645000)
+       libssl.so.10 => /lib64/libssl.so.10 (0x00002b1d5d85b000)
+       libcrypto.so.10 => /lib64/libcrypto.so.10 (0x00002b1d5dacd000)
+       librt.so.1 => /lib64/librt.so.1 (0x00002b1d5df30000)
+       libkrb5support.so.0 => /lib64/libkrb5support.so.0 (0x00002b1d5e138000)
+       libkeyutils.so.1 => /lib64/libkeyutils.so.1 (0x00002b1d5e348000)
+       libresolv.so.2 => /lib64/libresolv.so.2 (0x00002b1d5e54c000)
+       libsasl2.so.3 => /lib64/libsasl2.so.3 (0x00002b1d5e766000)
+       libselinux.so.1 => /lib64/libselinux.so.1 (0x00002b1d5e983000)
+       libcrypt.so.1 => /lib64/libcrypt.so.1 (0x00002b1d5ebaa000)
+       libpcre.so.1 => /lib64/libpcre.so.1 (0x00002b1d5ede1000)
+       libfreebl3.so => /lib64/libfreebl3.so (0x00002b1d5f043000)
+[staff library:98] ldd foobar | grep libfoo
+       libfoobar.so => not found
+[staff library:99] LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:libs
+[staff library:100] !ld
+ldd foobar | grep libfoo
+    libfoobar.so => libs/libfoobar.so (0x00002ab4bafba000)
