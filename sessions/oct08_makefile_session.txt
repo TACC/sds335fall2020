@@ -1,0 +1,914 @@
+[staff sds335fall2020:5] hostname
+staff.frontera.tacc.utexas.edu
+[staff sds335fall2020:6] pwd
+/home1/00434/eijkhout/335class/sds335fall2020
+[staff sds335fall2020:7] cd labs/library/
+[staff library:8] ls
+dynamiclib.sh  main.c  staticlib.sh  sub1.c  sub2.c
+[staff library:9] less *.c
+[staff library:10] cd ..
+[staff labs:11] pwd
+/home1/00434/eijkhout/335class/sds335fall2020/labs
+[staff labs:12] ls
+compiler/  library/
+[staff labs:13] cp -r library makelab
+[staff labs:14] cd !$
+cd makelab
+[staff makelab:15] # touch somefile
+[staff makelab:15] # git add !$
+[staff makelab:15] # emacs !$
+[staff makelab:15] # but ignore that: that was just to illustrate the ` !$ '
+[staff makelab:15] ls
+dynamiclib.sh  main.c  staticlib.sh  sub1.c  sub2.c
+[staff makelab:16] git status .
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	dynamiclib.sh
+	main.c
+	staticlib.sh
+	sub1.c
+	sub2.c
+
+nothing added to commit but untracked files present (use "git add" to track)
+[staff makelab:17] git add * && git commit -m "starting make lab"
+[master 1f8b662] starting make lab
+ 5 files changed, 93 insertions(+)
+ create mode 100644 labs/makelab/dynamiclib.sh
+ create mode 100644 labs/makelab/main.c
+ create mode 100644 labs/makelab/staticlib.sh
+ create mode 100644 labs/makelab/sub1.c
+ create mode 100644 labs/makelab/sub2.c
+[staff makelab:18] cat main.c
+/****************************************************************
+ ****
+ **** This program source is part of
+ **** Introduction to High-performance Scientific Computing
+ **** by Victor Eijkhout
+ **** copyright Victor Eijkhout 2011-2020
+ ****
+ **** fooprog.c : simple main program using external function
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+void foo(char*);
+void bar(char*);
+
+int main() {
+  foo("hello");
+  bar("world");
+  return 0;
+}
+[staff makelab:19] # let's automate the build process
+[staff makelab:19] touch Makefile
+[staff makelab:20] git add !$
+git add Makefile
+[staff makelab:21] emacs !$
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:22] cat Makefile
+all :
+	icc -c main.c
+	icc -c sub1.c
+	icc -c sub2.c
+	icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:23] icc -c main.c
+[staff makelab:24] icc -c sub1.c
+[staff makelab:25] ^1^2
+icc -c sub2.c
+[staff makelab:26] icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:27] ./myprogram
+Text one: hello
+Text two: world
+[staff makelab:28] # right now the makefile is just the commands spelled out.
+[staff makelab:28] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:29] make
+icc -c main.c
+icc -c sub1.c
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+File Edit Options Buffers Tools Makefile Help
+myprogram :                                            |/*******************************************************\
+        icc -o myprogram main.o sub1.o sub2.o          |*********
+main.o :                                               | ****
+        icc -c main.c                                  | **** sub1.c : declaration of function for fooprog.c
+        icc -c sub1.c                                  | ****
+        icc -c sub2.c                                  | *******************************************************\
+                                                       |*********/
+                                                       |#include <stdlib.h>
+                                                       |#include <stdio.h>
+                                                       |
+                                                       |void foo(char *s) {
+                                                       |  printf("Text one is: %s\n",s);
+                                                       |  return;
+                                                       |}
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+                                                       |
+-UUU:**--F1  Makefile       All L5    Git@master  (GNUm|-UU-:----F1  sub1.c         All L10   Git:master  (C/l Ab
+[staff makelab:30] # calling `make' searches for a file called Makefile or makefile
+[staff makelab:30] # and then kinda-sorta executes what's in it.
+[staff makelab:30] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:31] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+void foo(char *s) {
+  printf("Text one is: %s\n",s);
+  return;
+}
+[staff makelab:32] # I've edited one file, and now I need to rebuild
+[staff makelab:32] make
+icc -c main.c
+icc -c sub1.c
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:33] # this remakes everything. can we be a bit more parsimonious?
+[staff makelab:33] # you can have more makefiles, if you invoke them explicitly: make -f My_other_makefile
+[staff makelab:33] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:34] cat Makefile
+myprogram :
+	icc -o myprogram main.o sub1.o sub2.o
+main.o :
+	icc -c main.c
+sub1.o :
+	icc -c sub1.c
+sub2.o :
+	icc -c sub2.c
+
+# comments in make
+#
+# note the syntax of a rule:
+# line 1 ends with a semicolon
+# line 2 starts with a TAB character.
+[staff makelab:35] # now I can make individual parts of the program:
+[staff makelab:35] make sub2.o
+make: `sub2.o' is up to date.
+[staff makelab:36] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:37] cat Makefile
+myprogram :
+	icc -o myprogram main.o sub1.o sub2.o
+main.o : main.c
+	icc -c main.c
+sub1.o : sub1.c
+	icc -c sub1.c
+sub2.o : sub2.c
+	icc -c sub2.c
+
+# comments in make
+#
+# note the syntax of a rule:
+# line 1 has a semicolon
+# line 2 starts with a TAB character.
+[staff makelab:38] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:39] !mak
+make sub2.o
+make: `sub2.o' is up to date.
+[staff makelab:40] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:41] # I have edited sub2.c:
+[staff makelab:41] cat sub2.c
+#include <stdlib.h>
+#include <stdio.h>
+
+void bar(char *s) {
+  printf("Text two is: %s\n",s);
+  return;
+}
+[staff makelab:42] make sub2.o
+icc -c sub2.c
+[staff makelab:43] !!
+make sub2.o
+make: `sub2.o' is up to date.
+[staff makelab:44] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:45] make sub1.o
+make: `sub1.o' is up to date.
+[staff makelab:46] make program
+make: *** No rule to make target `program'.  Stop.
+[staff makelab:47] ^p^myp
+make myprogram
+make: `myprogram' is up to date.
+[staff makelab:48] make myprogram
+make: `myprogram' is up to date.
+[staff makelab:49] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:50] !mak
+make myprogram
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:51] make myprogram
+make: `myprogram' is up to date.
+[staff makelab:52] # where are we?
+[staff makelab:52] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	icc -o myprogram main.o sub1.o sub2.o
+main.o : main.c
+	icc -c main.c
+sub1.o : sub1.c
+	icc -c sub1.c
+sub2.o : sub2.c
+	icc -c sub2.c
+
+# comments in make
+#
+# note the syntax of a rule:
+# line 1 has a semicolon,
+#   the part before is the `target'
+#   the part after is the prerequisite
+# line 2 starts with a TAB character.
+#
+# formal definition:
+# if 1. the target doesn't exist, or
+#    2. the prerequisite is newer,
+# then (re)execute the command
+[staff makelab:53] rm *.o
+[staff makelab:54] ls
+dynamiclib.sh  main.c  Makefile  myprogram*  staticlib.sh  sub1.c  sub2.c
+[staff makelab:55] rm myprogram
+[staff makelab:56] # now we have a clean source directory
+[staff makelab:56] ls
+dynamiclib.sh  main.c  Makefile  staticlib.sh  sub1.c  sub2.c
+[staff makelab:57] make myprogram
+icc -c main.c
+icc -c sub1.c
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:58] # let's edit sub1
+[staff makelab:58] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:59] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+void foo(char *s) {
+  printf("Text one==: %s\n",s);
+  return;
+}
+[staff makelab:60] # what does this do:  make myprogram
+[staff makelab:60] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	icc -o myprogram main.o sub1.o sub2.o
+main.o : main.c
+	icc -c main.c
+sub1.o : sub1.c
+	icc -c sub1.c
+sub2.o : sub2.c
+	icc -c sub2.c
+
+# comments in make
+#
+# note the syntax of a rule:
+# line 1 has a semicolon,
+#   the part before is the `target'
+#   the part after is the prerequisite
+# line 2 starts with a TAB character.
+#
+# formal definition:
+# if 1. the target doesn't exist, or
+#    2. the prerequisite is newer,
+# then (re)execute the command
+[staff makelab:61] make myprogram
+icc -c sub1.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:62] # cool, what? we only recompile what is strictly necessary!
+[staff makelab:62] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:63] #makefile with macro:
+[staff makelab:63] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c
+	${CC} -c main.c
+sub1.o : sub1.c
+	${CC} -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+
+[staff makelab:64] rm sub1.o && make sub1.o
+icc -c sub1.c
+File Edit Options Buffers Tools C Help
+myprogram : main.o sub1.o sub2.o                       |# comments in make
+        ${CC} -o myprogram main.o sub1.o sub2.o        |#
+# this is a macro                                      |# note the syntax of a rule:
+CC = icc                                               |# line 1 has a semicolon,
+main.o : main.c                                        |#   the part before is the `target'
+        ${CC} -c main.c                                |#   the part after is the prerequisite
+sub1.o : sub1.c                                        |# line 2 starts with a TAB character.
+        ${CC} -c sub1.c                                |#
+sub2.o : sub2.c                                        |# formal definition:
+        ${CC} -c sub2.c                                |# if 1. the target doesn't exist, or
+                                                       |#    2. the prerequisite is newer,
+                                                       |# then (re)execute the command
+                                                       |
+-UUU:----F1  Makefile       All L8    Git@master  (GNUm|# macro assignment is more tolerant to spaces than the s\
+/*****************************************************\|hell
+***********                                            |# macros are invoked with a dollar AND with braces
+ ****                                                  |
+ **** fooprog.c : simple main program using external f\|
+unction                                                |
+ ****                                                  |
+ *****************************************************\|
+***********/                                           |
+#include <stdlib.h>                                    |
+#include <stdio.h>                                     |
+                                                       |
+void foo(char*);                                       |
+void bar(char*);                                       |
+-UU-:**--F1  main.c         Top L9    Git-master  (C/l |-UUU:----F1  makenotes.txt   All L16    (Text) ----------
+File Edit Options Buffers Tools C Help
+myprogram : main.o sub1.o sub2.o                       |# comments in make
+        ${CC} -o myprogram main.o sub1.o sub2.o        |#
+# this is a macro                                      |# note the syntax of a rule:
+CC = icc                                               |# line 1 has a semicolon,
+main.o : main.c                                        |#   the part before is the `target'
+        ${CC} -c main.c                                |#   the part after is the prerequisite
+sub1.o : sub1.c                                        |# line 2 starts with a TAB character.
+        ${CC} -c sub1.c                                |#
+sub2.o : sub2.c                                        |# formal definition:
+        ${CC} -c sub2.c                                |# if 1. the target doesn't exist, or
+                                                       |#    2. the prerequisite is newer,
+                                                       |# then (re)execute the command
+                                                       |
+-UUU:----F1  Makefile       All L8    Git@master  (GNUm|# macro assignment is more tolerant to spaces than the s\
+ ****                                                  |hell
+ *****************************************************\|# macros are invoked with a dollar AND with braces
+***********/                                           |
+#include <stdlib.h>                                    |
+#include <stdio.h>                                     |
+                                                       |
+void foo(char*);                                       |
+void bar(char*);                                       |
+                                                       |
+int main() {                                           |
+  foo("hello");                                        |
+  bar("world");                                        |
+  return 0;                                            |
+-UU-:**--F1  main.c         40% L9    Git-master  (C/l |-UUU:----F1  makenotes.txt   All L16    (Text) ----------
+File Edit Options Buffers Tools C Help
+myprogram : main.o sub1.o sub2.o                            |# comments in make
+        ${CC} -o myprogram main.o sub1.o sub2.o             |#
+# this is a macro                                           |# note the syntax of a rule:
+CC = icc                                                    |# line 1 has a semicolon,
+main.o : main.c                                             |#   the part before is the `target'
+        ${CC} -c main.c                                     |#   the part after is the prerequisite
+sub1.o : sub1.c                                             |# line 2 starts with a TAB character.
+        ${CC} -c sub1.c                                     |#
+sub2.o : sub2.c                                             |# formal definition:
+        ${CC} -c sub2.c                                     |# if 1. the target doesn't exist, or
+                                                            |#    2. the prerequisite is newer,
+                                                            |# then (re)execute the command
+                                                            |
+                                                            |# macro assignment is more tolerant to spaces than the shell
+                                                            |# macros are invoked with a dollar AND with braces
+-UUU:----F1  Makefile       All L8    Git@master  (GNUmakefi|
+ ****                                                       |
+ **********************************************************\|
+******/                                                     |
+#include <stdlib.h>                                         |
+#include <stdio.h>                                          |
+                                                            |
+void foo(char*);                                            |
+void bar(char*);                                            |
+                                                            |
+int main() {                                                |
+  foo("hello");                                             |
+  bar("world");                                             |
+  return 0;                                                 |
+}                                                           |
+                                                            |
+-UU-:**--F1  main.c         Bot L9    Git-master  (C/l Abbre|-UUU:----F1  makenotes.txt   All L16    (Text) --------------
+File Edit Options Buffers Tools Help
+myprogram : main.o sub1.o sub2.o                             |# formal definition:
+        ${CC} -o myprogram main.o sub1.o sub2.o              |# if 1. the target doesn't exist, or
+# this is a macro                                            |#    2. the prerequisite is newer,
+CC = icc                                                     |# then (re)execute the command
+main.o : main.c                                              |
+        ${CC} -c main.c                                      |# macro assignment is more tolerant to spaces than the shell
+sub1.o : sub1.c                                              |# macros are invoked with a dollar AND with braces
+        ${CC} -c sub1.c                                      |
+sub2.o : sub2.c                                              |
+        ${CC} -c sub2.c                                      |
+                                                             |
+                                                             |
+                                                             |
+                                                             |
+                                                             |
+-UUU:----F1  Makefile       All L8    Git@master  (GNUmakefil|-UUU:----F1  makenotes.txt   Bot L12    (Text) ---------------
+ ****                                                        |# comments in make
+ ***********************************************************\|#
+*****/                                                       |# note the syntax of a rule:
+#include <stdlib.h>                                          |# line 1 has a semicolon,
+#include <stdio.h>                                           |#   the part before is the `target'
+                                                             |#   the part after is the prerequisite
+void foo(char*);                                             |# line 2 starts with a TAB character.
+void bar(char*);                                             |#
+                                                             |# formal definition:
+int main() {                                                 |# if 1. the target doesn't exist, or
+  foo("hello");                                              |#    2. the prerequisite is newer,
+  bar("world");                                              |# then (re)execute the command
+  return 0;                                                  |
+}                                                            |# macro assignment is more tolerant to spaces than the shell
+                                                             |# macros are invoked with a dollar AND with braces
+                                                             |
+-UU-:**--F1  main.c         Bot L9    Git-master  (C/l Abbrev|-UUU:----F1  makenotes.txt   All L16    (Text) ---------------
+[staff makelab:65] rm sub1.o && make sub1.o CC=gcc
+gcc -c sub1.c
+[staff makelab:66] # hey.... I can change macros interactively!
+[staff makelab:66] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:67] # let's induce an accident:
+[staff makelab:67] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c
+	${CC} -c main.c
+sub1.o : sub1.c
+	$CC -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+
+[staff makelab:68] !rm
+rm sub1.o && make sub1.o CC=gcc
+C -c sub1.c
+make: C: Command not found
+make: *** [sub1.o] Error 127
+[staff makelab:69] # if you leave out the braces, it takes one character as macro name
+[staff makelab:69] # so $CC => $C + C => empty + C => C
+[staff makelab:69] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:70] # we have introduced a header file:
+[staff makelab:70] cat foobar.h
+void foo(char*);
+void bar(char*);
+[staff makelab:71] # which is used both at the defining site:
+[staff makelab:71] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+void foo(char *s) {
+  printf("Text one==: %s\n",s);
+  return;
+}
+[staff makelab:72] # and at the using site
+[staff makelab:72] cat main.c
+/****************************************************************
+ ****
+ **** fooprog.c : simple main program using external function
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+int main() {
+  foo("hello");
+  bar("world");
+  return 0;
+}
+[staff makelab:73] rm *.o myprogram
+[staff makelab:74] make myprogram
+icc -c main.c
+icc -c sub1.c
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:75] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:76] # I have changed the definition of sub1:
+[staff makelab:76] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+void foo(char *s,int i) {
+  printf("Text one==: %s %d\n",s,i);
+  return;
+}
+[staff makelab:77] # if I do "make sub1.o" what happens?
+[staff makelab:77] # HINT:
+[staff makelab:77] cat foobar.h
+void foo(char*);
+void bar(char*);
+[staff makelab:78] make sub1.o
+icc -c sub1.c
+sub1.c(11): warning #147: declaration is incompatible with "void foo(char *)" (declared at line 1 of "foobar.h")
+  void foo(char *s,int i) {
+       ^
+
+[staff makelab:79] # so let's edit:
+[staff makelab:79] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:80] cat foobar.h
+void foo(char*,int);
+void bar(char*);
+[staff makelab:81] !ma
+make sub1.o
+make: `sub1.o' is up to date.
+[staff makelab:82] # puzzle why was that only a warning?
+[staff makelab:82] rm sub1.o && make sub1.o
+icc -c sub1.c
+[staff makelab:83] # now what happens if I "make myprogram"?
+[staff makelab:83] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c
+	${CC} -c main.c
+sub1.o : sub1.c
+	${CC} -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+
+[staff makelab:84] make myprogram
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:85] # predict: ./myprogram
+[staff makelab:85] # HINT
+[staff makelab:85] cat main.c
+/****************************************************************
+ ****
+ **** fooprog.c : simple main program using external function
+File Edit Options Buffers Tools Makefile Help
+myprogram : main.o sub1.o sub2.o                             |#   the part before is the `target'
+        ${CC} -o myprogram main.o sub1.o sub2.o              |#   the part after is the prerequisite
+# this is a macro                                            |# line 2 starts with a TAB character.
+CC = icc                                                     |#
+main.o : main.c                                              |# formal definition:
+        ${CC} -c main.c                                      |# if 1. the target doesn't exist, or
+sub1.o : sub1.c                                              |#    2. the prerequisite is newer,
+        ${CC} -c sub1.c                                      |# then (re)execute the command
+sub2.o : sub2.c                                              |
+        ${CC} -c sub2.c                                      |# macro assignment is more tolerant to spaces than the shell
+main.o sub1.o sub2.o : foobar.h                              |# macros are invoked with a dollar AND with braces
+                                                             |
+                                                             |
+                                                             |
+                                                             |
+-UUU:----F1  Makefile       All L12   Git@master  (GNUmakefil|-UUU:----F1  makenotes.txt   Bot L12    (Text) ---------------
+ ****                                                        |void foo(char*,int);
+ ***********************************************************\|void bar(char*);
+*****/                                                       |
+#include <stdlib.h>                                          |
+#include <stdio.h>                                           |
+                                                             |
+#include "foobar.h"                                          |
+                                                             |
+int main() {                                                 |
+  foo("hello");                                              |
+  bar("world");                                              |
+  return 0;                                                  |
+}                                                            |
+                                                             |
+                                                             |
+                                                             |
+-UU-:----F1  main.c         Bot L10   Git:master  (C/l Abbrev|-UUU:----F1  foobar.h       All L1     (C/l Abbrev) ----------
+Wrote /home1/00434/eijkhout/335class/sds335fall2020/labs/makelab/Makefile
+File Edit Options Buffers Tools Makefile Help
+main.o : main.c                                              |#   the part before is the `target'
+        ${CC} -c main.c                                      |#   the part after is the prerequisite
+sub1.o : sub1.c                                              |# line 2 starts with a TAB character.
+        ${CC} -c sub1.c                                      |#
+sub2.o : sub2.c                                              |# formal definition:
+        ${CC} -c sub2.c                                      |# if 1. the target doesn't exist, or
+main.o sub1.o sub2.o : foobar.h                              |#    2. the prerequisite is newer,
+                                                             |# then (re)execute the command
+                                                             |
+                                                             |# macro assignment is more tolerant to spaces than the shell
+                                                             |# macros are invoked with a dollar AND with braces
+                                                             |
+                                                             |
+                                                             |
+                                                             |
+-UUU:----F1  Makefile       Bot L7    Git@master  (GNUmakefil|-UUU:----F1  makenotes.txt   Bot L12    (Text) ---------------
+ ****                                                        |void foo(char*,int);
+ ***********************************************************\|void bar(char*);
+*****/                                                       |
+#include <stdlib.h>                                          |
+#include <stdio.h>                                           |
+                                                             |
+#include "foobar.h"                                          |
+                                                             |
+int main() {                                                 |
+  foo("hello");                                              |
+  bar("world");                                              |
+  return 0;                                                  |
+}                                                            |
+                                                             |
+                                                             |
+                                                             |
+-UU-:----F1  main.c         Bot L10   Git:master  (C/l Abbrev|-UUU:----F1  foobar.h       All L1     (C/l Abbrev) ----------
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+int main() {
+  foo("hello");
+  bar("world");
+  return 0;
+}
+[staff makelab:86] cat sub1.c
+/****************************************************************
+ ****
+ **** sub1.c : declaration of function for fooprog.c
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+void foo(char *s,int i) {
+  printf("Text one==: %s %d\n",s,i);
+  return;
+}
+[staff makelab:87] ./myprogram
+Text one==: hello 3
+Text two is: world
+[staff makelab:88] # an accident in the making: we use a parametr that is never set
+[staff makelab:88] # Make to the rescue!
+[staff makelab:88] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:89] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c foobar.h
+	${CC} -c main.c
+sub1.o : sub1.c
+	${CC} -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+# 2nd stage, we'll get to that main.o sub1.o sub2.o : foobar.h
+
+[staff makelab:90] # now main.o depends on main.c & foobar.h
+[staff makelab:90] make myprogram
+icc -c main.c
+main.c(12): error #165: too few arguments in function call
+    foo("hello");
+               ^
+
+compilation aborted for main.c (code 2)
+make: *** [main.o] Error 2
+[staff makelab:91] # 1. note that main.c is being recompiled even though it wasn't edited.
+[staff makelab:91] # 2. we now catch the incompatibility with foobar.h
+[staff makelab:91] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:92] # updated main:
+[staff makelab:92] cat main.c
+/****************************************************************
+ ****
+ **** fooprog.c : simple main program using external function
+ ****
+ ****************************************************************/
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "foobar.h"
+
+int main() {
+  foo("hello",37);
+  bar("world");
+  return 0;
+}
+[staff makelab:93] make myprogram ; ./myprogram
+icc -c main.c
+icc -o myprogram main.o sub1.o sub2.o
+Text one==: hello 37
+Text two is: world
+[staff makelab:94] make myprogram && ./myprogram
+make: `myprogram' is up to date.
+Text one==: hello 37
+Text two is: world
+[staff makelab:95] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:96] # let's see if we can have just one rule for the header file:
+[staff makelab:96] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c
+	${CC} -c main.c
+sub1.o : sub1.c
+	${CC} -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+main.o sub1.o sub2.o : foobar.h
+
+
+[staff makelab:97] make myprogram
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:98] # that's indeed a little more elegant.
+[staff makelab:98] # oh, I'm getting sick of having to spell out the "rm *.o"
+[staff makelab:98] # it is tradition to have a "make clean" rule
+[staff makelab:98] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:99] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+main.o : main.c
+	${CC} -c main.c
+sub1.o : sub1.c
+	${CC} -c sub1.c
+sub2.o : sub2.c
+	${CC} -c sub2.c
+main.o sub1.o sub2.o : foobar.h
+
+clean :
+	rm *.o myprogram
+
+
+[staff makelab:100] make clean
+rm *.o myprogram
+[staff makelab:101] make clean # there is no file named "clean", so let's again try to make it
+rm *.o myprogram
+rm: cannot remove ‘*.o’: No such file or directory
+rm: cannot remove ‘myprogram’: No such file or directory
+make: *** [clean] Error 1
+[staff makelab:102] rm doesnotexist
+rm: cannot remove ‘doesnotexist’: No such file or directory
+[staff makelab:103] rm -f doesnotexist
+[staff makelab:104] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:105] make clean
+rm -f *.o myprogram
+[staff makelab:106] # back to where we were
+[staff makelab:106] make myprogram
+icc -c main.c
+icc -c sub1.c
+icc -c sub2.c
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:107] make myprogram
+make: `myprogram' is up to date.
+[staff makelab:108] fg
+emacs Makefile
+
+[1]+  Stopped                 emacs Makefile
+[staff makelab:109] # makefile with template rule:
+[staff makelab:109] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+COPTIONS = -c
+# template rule for o-on-c dependency:
+%.o : %.c
+	${CC} ${COPTIONS} $^
+
+# main.o : main.c
+# 	${CC} ${COPTIONS} main.c
+# sub1.o : sub1.c
+# 	${CC} ${COPTIONS} sub1.c
+# sub2.o : sub2.c
+# 	${CC} ${COPTIONS} sub2.c
+
+main.o sub1.o sub2.o : foobar.h
+
+clean :
+	rm -f *.o myprogram
+
+
+[staff makelab:110] make clean
+rm -f *.o myprogram
+[staff makelab:111] make myprogram
+icc -c main.c foobar.h
+icc -c sub1.c foobar.h
+icc -c sub2.c foobar.h
+icc -o myprogram main.o sub1.o sub2.o
+[staff makelab:112] touch notused.c
+[staff makelab:113] make notused.o
+icc -c notused.c
+[staff makelab:114] mkdir morefiles
+[staff makelab:115] touch morefile/alsonotused.c
+touch: cannot touch ‘morefile/alsonotused.c’: No such file or directory
+[staff makelab:116] ^file^files
+touch morefiles/alsonotused.c
+[staff makelab:117] ls morefiles/
+alsonotused.c
+[staff makelab:118] make alsonotused.o
+make: *** No rule to make target `alsonotused.o'.  Stop.
+[staff makelab:119] make morefile/alsonotused.o
+make: *** No rule to make target `morefile/alsonotused.o'.  Stop.
+[staff makelab:120] ^file^files
+make morefiles/alsonotused.o
+icc -c morefiles/alsonotused.c
+[staff makelab:121] cat Makefile
+myprogram : main.o sub1.o sub2.o
+	${CC} -o myprogram main.o sub1.o sub2.o
+# this is a macro
+CC = icc
+COPTIONS = -c
+# template rule for o-on-c dependency:
+%.o : %.c
+	${CC} ${COPTIONS} $^
+
+# main.o : main.c
+# 	${CC} ${COPTIONS} main.c
+# sub1.o : sub1.c
+# 	${CC} ${COPTIONS} sub1.c
+# sub2.o : sub2.c
+# 	${CC} ${COPTIONS} sub2.c
+
+main.o sub1.o sub2.o : foobar.h
+
+clean :
+	rm -f *.o myprogram
+
+
+[staff makelab:122] fg
+emacs Makefile
+[staff makelab:123] open main.c
+Couldn't get a file descriptor referring to the console
+[staff makelab:124]
