@@ -1,0 +1,15 @@
+# comments in make
+#
+# note the syntax of a rule:
+# line 1 has a semicolon,
+#   the part before is the `target'
+#   the part after is the prerequisite
+# line 2 starts with a TAB character.
+#
+# formal definition:
+# if 1. the target doesn't exist, or
+#    2. the prerequisite is newer,
+# then (re)execute the command
+
+# macro assignment is more tolerant to spaces than the shell
+# macros are invoked with a dollar AND with braces
