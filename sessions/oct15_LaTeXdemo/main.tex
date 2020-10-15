@@ -1,0 +1,91 @@
+\documentclass{article} % but also try: {artikel3}
+% IEEEtrans
+% SIAMwhatever
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx,pslatex}
+\input list
+
+\title{SDS 335 Demo}
+\author{Victor Eijkhout }
+\date{15 October 2020}
+
+%\textwidth=2in
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+
+This is the first section of my document.
+It has two sentences.
+
+After a blank line
+it
+starts a new paragraph.
+This paragraph was indented. Therefore it looked
+weird when it was so short.
+% this is a comment: \[ indicates a display formula
+\[ \left( x \right ) \left( \int_0^\infty x\partial x= 5 \right) \]
+Mathematics is clever $\int_0^\infty x\partial x= 5$
+% this is a comment: $foo$ is an in-line formula
+because it knows where it goes.
+
+\section{Code}
+
+Verbatim mode uses mono-space
+\begin{verbatim}
+// first a function
+void f() { return 5;}
+/* now the main */
+int main() {
+  return 0;
+}
+\end{verbatim}
+But the listing package is much nicer:
+\lstset{language=C,style=reviewcode}
+\begin{lstlisting}
+// first a function
+void f() { return 5;}
+/* now the main */
+int main() {
+  return 0;
+}
+\end{lstlisting}
+\section{Recapitulation}
+\label{sec:recap}
+\subsection{foo}
+\subsubsection{bar}
+
+Final thoughts, to elaborate on section \ref{sec:dev}.
+\begin{itemize}
+    \item first
+    \item second
+\end{itemize}
+
+In this figure~\ref{fig:butterfly} we see.
+
+\begin{figure}[ht] 
+%"ht" means "here if possible, otherwise top of next page
+    \centering
+\includegraphics[scale=.55]{butterfly}
+    \caption{Caption}
+    \label{fig:butterfly}
+\end{figure}
+
+\section{Development}
+\label{sec:dev}
+
+\begin{enumerate}
+    \item one thought
+    \item another
+\end{enumerate}
+
+For related work see~\cite{Victor:otherbook}.
+Another paragraph.
+
+%\bibliographystyle{plain} % IEEEtrans
+%\bibliography{vle}
+
+\end{document}

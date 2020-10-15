@@ -1,0 +1,11 @@
+Do:
+
+pdflatex main
+pdflatex main
+
+and then view main.pdf
+
+You can edit the files to play with this. 
+For more convenience, create an account and project on overleaf.com
+
+VLE
